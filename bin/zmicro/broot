@@ -1,0 +1,17 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  zmicro broot <args ...>"
+  echo ""
+}
+
+core() {
+  broot "$@"
+}
+
+run() {
+  core "$@"
+}
+
+run "$@"

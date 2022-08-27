@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -e
+
+VERSION=v1.14.2
+
+help() {
+  echo "Usage:"
+  echo "  zmicro package install broot <args...>"
+  echo ""
+}
+
+install() {
+  local arch="x86_64"
+  local os="linux"
+  local bin_path=/usr/bin
+
+  if [ "$(os::is_macos)" = "true" ]; then
+    # mac no support raw bin
+    brew install broot
+    return
+  fi
+
+  local tmp_file=/tmp/broot.zip
+
+  local url="https://github.com/Canop/broot/releases/download/${VERSION}/broot_${VERSION:1}.zip"
+  curl -fSL $url -o $tmp_file
+
+  cd /tmp
+  tar -zxvf $tmp_file >>/dev/null 2>&1
+
+  sudo mv ${arch}-${os}/broot $bin_path
+
+  rm -rf $tmp_file
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  install
+  log::success "install broot success."
+}
+
+run() {
+  core $@
+}
+
+run $@
